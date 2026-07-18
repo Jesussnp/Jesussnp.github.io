@@ -1,0 +1,41 @@
+@font-face {
+  font-family: "RymanEco";
+  font-display: swap;
+  src:
+    url("RymanEco.woff2") format("woff2"),
+    url("RymanEco_2.woff") format("woff"),
+    url("RymanEco_3.otf") format("truetype");
+}
+
+:root {
+  background-color: rgb(190, 190, 190);
+  font-family: sans-serif;
+
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+  font-family: "RymanEco", sans-serif;
+  font-size: 3em;
+  padding: 0.25em;
+  border-radius: 15px;
+  text-align: center;
+  background-color: rgb(150, 150, 150);
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(50, 50, 50);
+}
+
+footer p {
+  color: rgb(150, 150, 150);
+}
+}
