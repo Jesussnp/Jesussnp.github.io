@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <title>La Mesa Verde</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Esto se pone para poder escalarlo a versión móvil -->
+        <link rel="stylesheet" href="estilos.css"> <!-- Para indicar donde está el archivo de estilos del CSS -->
+        <link rel="icon" type="image/png" href="img/icono.png">
+        <!-- Descarga de fuente de letra Montserrat en internet -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    </head>
+
+    <body>
+        <header class="cabecera">
+            <div class="cajalogo"><img class="logo" src="img/logo.png" alt="Logotipo de La Mesa Verde, donde aparece una hoja y un tenedor"></div>
+            <div class="cajalogin"><img class="login" src="img/login.png" alt="Lugar donde se encuentra el login, aparece una flecha y una hoja"></div>
+            <nav class="cajanavegacion">
+                <ul class="listanav">
+                    <li class="itemsnav"><a class="enlacenav" href="#"> Pizzas </a></li>
+                    <li class="itemsnav"><a class="enlacenav" href="#"> No-Carne </a></li>
+                    <li class="itemsnav"><a class="enlacenav" href="#"> No-Pollo </a></li>
+                    <li class="itemsnav"><a class="enlacenav" href="#"> Heura </a></li>
+                </ul>
+            </nav>
+        </header>
+        <header class="menuhamburgesa"> <!-- Este apartado solo se verá en la versión para menos de 640px -->
+            <img class="iconohamburgesa" src="img/menuhamburgesa.png" alt="Icono de Menú estilo hamburgesa">
+            <img class="iconohamburgesa" src="img/logo.png" alt="Logotipo de La Mesa Verde, donde aparece una hoja y un tenedor">
+        </header>
+
+        <main>
+            <section>
+                <h1> Comidas </h1>
+                <div class="cajatarjetascomidas">
+                    <article class="tarjetascomidas">
+                        <header class="cajacontenido">
+                            <img class="platos" src="img/pizza.jpg" alt="Pizza con York vegano">
+                            <h3>Pizza con York vegano</h3>
+                            <p>Pizza con queso y York vegano de Heura con salsa de tomate casera.</P>
+                        </header>
+                        <footer class="cajaboton"><a class="boton" href="#"> Pedir </a></footer>
+                    </article>
+                    <article class="tarjetascomidas">
+                        <header class="cajacontenido">
+                            <img class="platos" src="img/pasta.jpg" alt="Ensalada de pasta con No-Carne">
+                            <h3>Ensalada de pasta con No-Carne</h3>
+                            <p>Ensalada de pasta de colores con bocados de No-Carne y tomate cherri.</P>
+                        </header>
+                            <footer class="cajaboton"><a class="boton" href="#"> Pedir </a></footer>
+                    </article>
+                    <article class="tarjetascomidas">
+                        <header class="cajacontenido">
+                            <img class="platos" src="img/burger.jpg"  alt="Burger vegana de Heura">
+                            <h3>Burger vegana de Heura</h3>
+                            <p>Burger con pan Brioche y No-Carne de heura con salsa Ranchera y tomate.</P>
+                        </header>
+                        <footer class="cajaboton"><a class="boton" href="#"> Pedir </a></footer>
+                    </article>
+                    <article class="tarjetascomidas">
+                        <header class="cajacontenido">
+                            <img class="platos" src="img/nopollo.jpg" alt="scalopes de No-Pollo">
+                            <h3>Escalopes de No-Pollo</h3>
+                            <p>Escalopes de No-Pollo empanados con verduras salteados y arroz integral.</P>
+                        </header>
+                        <footer class="cajaboton"><a class="boton" href="#"> Pedir </a></footer>
+                    </article>
+                </div>
+            </section>
+
+            <section>
+                <h2> Contacto </h2>
+                <article class="cajacontacto">
+                    <div class="cajamapa">
+                        <img class="mapa" src="img/mapa.jpg" alt="Mapa de la dirección del restaurante">
+                    </div>
+                    <header class="cajatexto">
+                        <div class="contactotexto"><p>La comida vegana se basa en ingredientes 100% de origen vegetal: frutas, verduras, legumbres, cereales, frutos secos y semillas. Es una cocina saludable, sostenible y llena de sabor, creada sin utilizar ningún producto animal.</p></div>
+                        <div class="contactotexto"><p>En La Mesa Verde nos especializamos en bowls nutritivos, hamburguesas vegetales caseras, wraps frescos, ensaladas creativas y postres veganos elaborados con ingredientes naturales. Cada plato está diseñado para ofrecer sabor, color y equilibrio.</p></div>
+                        <div class="contactotexto"><p>Trabajamos de manera responsable con el planeta: utilizamos ingredientes locales, reducimos el uso de plásticos, apostamos por envases biodegradables y fomentamos un consumo consciente. Creemos en una cocina que cuida de las personas y del entorno.</p></div>
+                    </header>
+                    <footer class="cajainformacion">
+                        <div class="cajatelefono">
+                            <div class="contactotelefono">
+                                <img class="logotelefono" src="img/logotelefono.png" alt="Logotipo de telefono">
+                            </div>
+                            <div class="contactotelefono">
+                                <h3>TELÉFONOS</h3>
+                                <h4 id="telefonoimportante">611 222 333</h4><h4>644 555 666</h4>
+                            </div>
+                        </div>
+                        <div class="cajaemail">
+                            <div class="contactoemail">
+                                <img class="logoemail" src="img/logoemail.png" alt="Logotipo de email">
+                            </div>
+                            <div class="contactoemail">
+                                <h3>EMAILS</h3>
+                                <h4 id="emailimportante">contacto@mesaverde.es</h4><h4>info@mesaverde.es</h4>
+                            </div>
+                        </div>
+                    </footer>
+                </article>
+            </section>
+        </main>
+
+        <footer class="piePagina">
+            <h3 class="titulopie">La Mesa Verde</h3>
+            <div class="redes">
+                <a href="https://www.facebook.com/" target="_blank"><img class="logoredes" src="img/facebook.png" alt="Logotipo de Facebook"></a>
+                <a href="https://www.instagram.com/?hl=es" target="_blank"><img class="logoredes" src="img/instagram.png" alt="Logotipo de Instagram"></a>
+                <a href="https://x.com/?lang=es" target="_blank"><img class="logoredes" src="img/twitter.png" alt="Logotipo de Twitter"></a>
+                <a href="https://www.tiktok.com/" target="_blank"><img class="logoredes" src="img/tiktok.png" alt="Logotipo de TikTok"></a>
+            </div>
+            <P class="copy">&#169; Copyright <br> Design: JJSNP</P> <!-- el código "&#169;" se usa para poner el logo de copyright -->
+        </footer>
+    </body>
+</html>

@@ -10,7 +10,6 @@
 :root {
   background-color: rgb(190, 190, 190);
   font-family: sans-serif;
-
 }
 
 header {
@@ -28,6 +27,33 @@ h1 {
   background-color: rgb(150, 150, 150);
 }
 
+h1 strong {
+  background-color: yellow;
+  color: brown;
+}
+
+section {
+    display: flex;
+    width: 30%;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(93, 93, 93);
+}
+}
+
+a {
+    display: flex;
+    width: 30%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+
 footer {
     display: flex;
     justify-content: center;
@@ -37,5 +63,7 @@ footer {
 
 footer p {
   color: rgb(150, 150, 150);
+  text-align: center;
 }
+
 }

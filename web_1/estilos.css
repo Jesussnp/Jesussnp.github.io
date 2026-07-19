@@ -1,0 +1,367 @@
+* { /* El reseteo que se hace para que al añadir un borde no aumente de tamaño ni tenga margen */
+    box-sizing: border-box;
+    margin: 0px;
+} 
+
+body {
+    background-color: #fef7e7;
+    font-family: "Montserrat", "Open Sans Regular", Arial; /* Montserrat es la fuente descargada de internet y Open Sans es la de forma local*/
+}
+
+/* --CABECERA-- */
+
+.cabecera { /* vamos a crear una caja donde introducir todos los componentes de la cabecera */
+    margin: 0px;
+    background-color: #d1c1a6;
+    display: grid; /* Es el display usado para hacer cajas bidimensionales */ 
+    grid-template-columns: 1fr 3fr; /* Aquí se está indicando que queremos dos columnas de proporción 1/4 y otra de 3/4 */
+    grid-template-rows: 40px 40px; /*Aquí se está indicando que queremos dos filas de 40px cada una */
+    align-content: center;
+}
+
+.cajalogo { 
+    grid-row: 1/3; /* Aquí se está indicando que queremos que la caja logo acupe la columa 1 del grid */
+    justify-self: center;
+    align-self: center;
+    background-color: #d1c1a6;
+    display: flex; /* es el display usado para hacer cajas unidimensionales */ 
+    justify-content: center;
+}
+
+.logo {
+    width: 190px;
+}
+
+.cajalogin {
+    justify-self: end;
+    align-self: center;
+    background-color: #d1c1a6;
+    display: flex;
+    justify-content: end;
+}
+
+.login {
+    width: 25%;
+    margin-top: 10px;
+    margin-right: 20px;
+    
+}
+
+.login:hover { /* Aquí se está indicando que hacer cuado se pase el ratón por encima */
+    opacity: .4;
+}
+
+.cajanavegacion {
+    justify-self: center;
+    align-self: center;
+    background-color: #d1c1a6;
+    width: 100%;
+    display: flex;
+}
+
+.listanav {
+    width: 90%;
+    display: flex;
+    flex-direction: row; /* Aquí se está indicando que queremos que la dirección de los componentes sea de la dirección de escritura */
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+    padding: 0;
+}
+
+.itemsnav {
+    width: 100%;
+    text-align: center;
+}
+
+ .enlacenav {
+    text-decoration: none;
+    color: #4f3320;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.enlacenav:hover {
+    color: #4f3320;
+    font-weight: bold;
+}
+
+.menuhamburgesa { /* esto se usa para no mostrar la caja menuhamburgesa por pantalla */
+    display: none;
+}
+
+/* -- CONTENIDO DE LA PÁGINA--  */
+
+/* --COMIDAS-- */
+
+h1 { 
+    font-size: 35px;
+    color: #4f3320;
+    text-shadow: 2px 2px 4px #4f3320; /* Aquí se está indicando que queremos ponerle una sombra al título comidas */
+    text-align: center;
+    margin: 30px 0;
+}
+
+.cajatarjetascomidas { /*Haremos una caja donde contendrá todas las tarjetas */
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.tarjetascomidas { /* cada tarjeta irá en una caja donde podremos todos los elementos de la tarjeta*/
+    width: 100%;
+    max-width: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    border: 2px solid #4f3320;
+}
+
+.tarjetascomidas:first-child, .tarjetascomidas:last-child { /* Aquí se está indicando que queremos darle estilo al primer y último hijo de tarjetascomidas */
+    background-color: #d1c1a6;
+}
+
+.tarjetascomidas:nth-child(2), .tarjetascomidas:nth-child(3) {  /* Aquí se está indicando que queremos darle estilo al segundo y tercer hijo de tarjetascomidas */
+    background-color: #ebddbe; 
+}
+
+.cajacontenido { /* añadiremos estilo al contenido de la tarjeta */
+    width: 100%;
+    align-self: center;
+    justify-content: center; 
+    flex: 1 1 auto; /* Aquí se está indicando que queremos que se agrande y se achique de forma proporcional */
+}
+
+.platos {
+    width: 100%;
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px; 
+}
+
+.cajacontenido h3 { /* Aquí se está indicando que queremos darle estilo al h3 que esté dentro de cajacontenido */
+    font-size: 20px;
+    color: #4f3320;
+    text-align: center;
+    margin: 15px 0;
+}
+
+.cajacontenido p {
+    font-size: 14px;
+    margin: 10px 5px;
+}
+
+.cajaboton {
+    margin: 25px 0 15px 0;
+}
+
+.boton {
+    text-decoration: none;
+    font-size: 18px;
+    background-color: #4f3320;
+    color: #fef7e7;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 7px;
+}
+
+.boton:hover {
+    text-decoration: none;
+    font-size: 18px;
+    color: #4f3320;
+    background-color: #fef7e7;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 10px;
+    outline: 3px solid #4f3320;
+}
+
+/* -- CONTACTOS -- */
+
+h2 {
+    font-size: 30px;
+    color: #4f3320;
+    text-align: center;
+    margin: 30px 0;
+    text-shadow: 2px 2px 4px #4f3320;
+}    
+
+.cajacontacto {
+    width: 90%;
+    background-color: #f5ecd7;
+    margin: auto;
+    padding: 10px 10px 10px 0;
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    grid-template-rows: auto auto;
+    align-content: center;
+    border-radius: 8px;
+}
+
+.cajamapa {
+    grid-area: 1/2/3/3; /* Aquí se está indicando que queremos que el mapa acupe tanto la segunda "celda" de arriba como la segunda de abajo */
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    justify-content: center;
+}
+
+.mapa {
+    width: 99%;
+    max-width: 400px;
+}
+
+.cajatexto {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.contactotexto {
+    width: 30%;
+    margin: 5px;
+    align-self: baseline;
+}
+
+.cajainformacion {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.cajatelefono, .cajaemail { /* Aquí se está indicando que queremos darle estilo a dos caja (clasese) a la vez */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+.contactotelefono, .contactoemail {
+    margin: auto;
+    text-align: center;
+}
+
+.logotelefono, .logoemail {
+    width: 100%;
+}
+
+#telefonoimportante, #emailimportante { /* con "#" en lugar de llamar al componenete por la clase se está llamando por la id */
+    font-size: 20px;
+    font-weight: bold;
+    color: #4f3320;
+    text-align: center;
+}
+
+h4 {
+    font-size: 14px;
+    color: #4f3320;
+    text-align: center;
+}
+
+/* -- PIE DE PÁGINA -- */
+
+.piePagina {
+    background-color: #4f3320; 
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 30px;
+    padding: 30px 0 20px 0;
+}
+
+.titulopie {
+    color: #f5ecd7;
+    font-size: 30px;
+    opacity: .6; /* Aquí se está indicando que queremos que el elemento tenga una opacidad de un 60% */
+}
+
+.redes {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.logoredes {
+    width: 40px;
+    opacity: .5;
+}
+
+.copy {
+    color: #f5ecd7;
+    font-size: 18px;
+    opacity: .8;  
+}
+
+.titulopie:hover, .logoredes:hover, .copy:hover {
+    opacity: 1; /* Aquí se está indicando que no queremos que tenga la opacidad que se le ha dado anteriormente */
+}
+/* Versión para pantallas menores a 620Px de width */ 
+
+@media screen and (max-width:620px) { /* Es necesario hacer un media queries para indicar cuando va a cambiar de estilo */
+    .cabecera {
+        display: none; /* esto se usa para no mostrar la caja cabecera por pantalla */
+    }
+    
+    .menuhamburgesa {
+        width: 100%;
+        margin: 0px;
+        background-color: #d1c1a6;
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+    }
+    
+    .iconohamburgesa {
+        align-self: center;
+        width: 75%;
+    }
+    
+    .tarjetascomidas:nth-child(odd) { /* "odd" se usa para indicar a las tarjetas pares */
+        display: none;
+    }
+    
+    .cajatarjetascomidas {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cajamapa {
+        display: none;
+    }
+    
+    .cajacontacto {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+    }
+    
+    .cajainformacion {
+        flex-direction: column;
+        align-items: center; 
+    }
+    
+    .titulopie {
+        display: none;
+    }
+    
+    .copy {
+        display: none;
+    }
+    
+    .redes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;   
+    }
+    
+    .logoredes {
+        border-radius: 50%;
+    }  
+}
