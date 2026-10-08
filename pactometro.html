@@ -3,129 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pactómetro del Congreso</title>
+<title>Votación del Congreso</title>
 <style>
   :root {
-    --fondo: #f3f1ec;
-    --papel: #ffffff;
-    --tinta: #1d2230;
-    --suave: #6b7080;
-    --linea: #d9d6cd;
+    --fondo: #f3f1ec; --papel: #ffffff; --tinta: #1d2230; --suave: #6b7080; --linea: #d9d6cd;
+    --si: #1e7a3a; --no: #b3261e; --abs: #5b6070;
   }
   * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--fondo);
-    color: var(--tinta);
-    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-    padding: 32px 16px 48px;
-  }
+  body { margin: 0; background: var(--fondo); color: var(--tinta);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif; padding: 32px 16px 48px; }
   main { max-width: 960px; margin: 0 auto; }
   h1 { font-size: 1.9rem; margin: 0 0 4px; letter-spacing: -0.02em; }
   .sub { color: var(--suave); margin: 0 0 28px; }
 
-  .resumen {
-    display: flex; justify-content: space-between; align-items: baseline;
-    flex-wrap: wrap; gap: 8px; margin-bottom: 10px;
-  }
-  .total { font-size: 2.4rem; font-weight: 700; line-height: 1; }
-  .total small { font-size: 1rem; font-weight: 400; color: var(--suave); }
-  #estado { font-weight: 600; }
+  .marcador { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .caja { background: var(--papel); border: 1px solid var(--linea); border-radius: 10px; padding: 12px 14px; border-top-width: 5px; }
+  .caja.si { border-top-color: var(--si); } .caja.abs { border-top-color: var(--abs); } .caja.no { border-top-color: var(--no); }
+  .caja .t { font-size: .85rem; color: var(--suave); }
+  .caja .n { font-size: 2.2rem; font-weight: 700; line-height: 1.1; }
+  .caja.no { text-align: right; } .caja.abs { text-align: center; }
+  #resultado { font-weight: 600; min-height: 1.5em; margin-bottom: 8px; }
 
-  /* Barra */
   .barra-wrap { position: relative; padding-top: 22px; }
-  .barra {
-    display: flex; height: 64px; background: #e4e1d8;
-    border-radius: 6px; overflow: hidden; border: 1px solid var(--linea);
-  }
-  .tramo {
-    height: 100%; display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 1.1rem; overflow: hidden;
-    transition: width .25s ease;
-  }
-  .marca {
-    position: absolute; top: 0; bottom: -8px; left: calc(176 / 350 * 100%);
-    border-left: 2px dashed var(--tinta); pointer-events: none;
-  }
-  .marca span {
-    position: absolute; top: 0; left: 6px; font-size: .78rem; white-space: nowrap;
-    background: var(--fondo); padding: 0 4px; font-weight: 600;
-  }
+  .barra { display: flex; height: 64px; background: #e4e1d8; border-radius: 6px; overflow: hidden; border: 1px solid var(--linea); }
+  .lado { display: flex; height: 100%; flex: 0 0 auto; width: 0; transition: width .25s ease; }
+  .hueco { flex: 1; }
+  .tramo { height: 100%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1.05rem; overflow: hidden; min-width: 0; }
+  .marca { position: absolute; top: 0; bottom: -8px; left: calc(176 / 350 * 100%);
+    border-left: 2px dashed var(--tinta); pointer-events: none; }
+  .marca span { position: absolute; top: 0; left: 6px; font-size: .78rem; white-space: nowrap;
+    background: var(--fondo); padding: 0 4px; font-weight: 600; }
   .escala { display: flex; justify-content: space-between; font-size: .8rem; color: var(--suave); margin-top: 10px; }
 
-  /* Botones */
-  .panel {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 14px; margin-top: 32px;
-  }
-  .partido {
-    background: var(--papel); border: 1px solid var(--linea); border-radius: 10px;
-    overflow: hidden; display: flex; flex-direction: column;
-  }
+  .panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 32px; }
+  .partido { position: relative; background: var(--papel); border: 1px solid var(--linea); border-radius: 10px;
+    overflow: hidden; display: flex; flex-direction: column; }
   .partido .color { height: 10px; }
-  .partido .nombre { text-align: center; font-weight: 600; padding: 12px 8px 0; }
-  .valor {
-    width: 100%; border: 0; background: none; font: inherit;
-    font-size: 2.2rem; font-weight: 700; padding: 6px 0 10px; color: var(--tinta);
-    text-align: center; -moz-appearance: textfield;
-  }
+  .partido .nombre { text-align: center; font-weight: 600; padding: 12px 24px 0; overflow-wrap: anywhere; }
+  .valor { width: 100%; border: 0; background: none; font: inherit; font-size: 2.2rem; font-weight: 700;
+    padding: 6px 0 10px; color: var(--tinta); text-align: center; -moz-appearance: textfield; }
   .valor::-webkit-outer-spin-button, .valor::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  .ctrl { display: flex; border-top: 1px solid var(--linea); }
-  .ctrl button {
-    flex: 1; border: 0; background: none; font-size: 1.6rem; padding: 10px 0;
-    cursor: pointer; color: var(--tinta);
-  }
-  .ctrl button + button { border-left: 1px solid var(--linea); }
+  .ctrl, .voto { display: flex; border-top: 1px solid var(--linea); }
+  .ctrl button { flex: 1; border: 0; background: none; font-size: 1.6rem; padding: 8px 0; cursor: pointer; color: var(--tinta); }
+  .ctrl button + button, .voto button + button { border-left: 1px solid var(--linea); }
   .ctrl button:hover { background: #efece4; }
-  .ctrl button:active { background: #e2ded3; }
-  button:focus-visible, .valor:focus-visible { outline: 3px solid #3b6fd4; outline-offset: -3px; }
+  .voto button { flex: 1; border: 0; background: none; font: inherit; font-size: .85rem; font-weight: 600;
+    padding: 10px 2px; cursor: pointer; color: var(--tinta); }
+  .voto button:hover { background: #efece4; }
+  .voto .si.on { background: var(--si); color: #fff; }
+  .voto .no.on { background: var(--no); color: #fff; }
+  .voto .abs.on { background: var(--abs); color: #fff; }
+  button:focus-visible, .valor:focus-visible, input:focus-visible { outline: 3px solid #3b6fd4; outline-offset: -3px; }
 
-  .pie { margin-top: 28px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-  #reset {
-    border: 1px solid var(--tinta); background: none; padding: 9px 16px;
-    border-radius: 8px; font: inherit; cursor: pointer;
-  }
-  #reset:hover { background: var(--tinta); color: #fff; }
-  #guardar { border: 0; background: var(--tinta); color: #fff; padding: 10px 16px; border-radius: 8px; font: inherit; cursor: pointer; }
-  #guardar:hover { opacity: .88; }
-  #guardado { color: #1e7a3a; font-size: .9rem; font-weight: 600; }
-  #aviso { color: #b3261e; font-size: .9rem; min-height: 1.2em; }
+  .quitar { position: absolute; top: 14px; right: 6px; width: 24px; height: 24px; border: 0; border-radius: 50%;
+    background: none; color: var(--suave); font-size: 1.1rem; line-height: 1; cursor: pointer; }
+  .quitar:hover { background: #efece4; color: var(--no); }
 
-  .partido { position: relative; }
-  .quitar {
-    position: absolute; top: 14px; right: 6px; width: 24px; height: 24px;
-    border: 0; border-radius: 50%; background: none; color: var(--suave);
-    font-size: 1.1rem; line-height: 1; cursor: pointer;
-  }
-  .quitar:hover { background: #efece4; color: #b3261e; }
-  .nuevo {
-    margin-top: 28px; padding: 16px; background: var(--papel);
-    border: 1px solid var(--linea); border-radius: 10px;
-    display: flex; gap: 12px; align-items: end; flex-wrap: wrap;
-  }
+  .nuevo { margin-top: 28px; padding: 16px; background: var(--papel); border: 1px solid var(--linea);
+    border-radius: 10px; display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
   .nuevo label { display: flex; flex-direction: column; gap: 4px; font-size: .85rem; color: var(--suave); }
   .nuevo input[type=text] { font: inherit; padding: 8px 10px; border: 1px solid var(--linea); border-radius: 6px; min-width: 180px; }
   .nuevo input[type=color] { width: 56px; height: 38px; padding: 2px; border: 1px solid var(--linea); border-radius: 6px; background: none; cursor: pointer; }
-  .nuevo button { border: 0; background: var(--tinta); color: #fff; padding: 10px 16px; border-radius: 8px; font: inherit; cursor: pointer; }
-  .nuevo button:hover { opacity: .88; }
-  @media (prefers-reduced-motion: reduce) { .tramo { transition: none; } }
+  .nuevo button, #guardar { border: 0; background: var(--tinta); color: #fff; padding: 10px 16px; border-radius: 8px; font: inherit; cursor: pointer; }
+  .nuevo button:hover, #guardar:hover { opacity: .88; }
+
+  .pie { margin-top: 28px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  #reset { border: 1px solid var(--tinta); background: none; padding: 9px 16px; border-radius: 8px; font: inherit; cursor: pointer; }
+  #reset:hover { background: var(--tinta); color: #fff; }
+  #aviso { color: var(--no); font-size: .9rem; } #guardado { color: var(--si); font-size: .9rem; font-weight: 600; }
+  @media (max-width: 520px) { .caja .n { font-size: 1.6rem; } }
+  @media (prefers-reduced-motion: reduce) { .lado { transition: none; } }
 </style>
 </head>
 <body>
 <main>
-  <h1>Pactómetro</h1>
-  <p class="sub">Congreso de los Diputados · 350 escaños. Ajusta los escaños de cada partido y la barra se rellena sola.</p>
+  <h1>Votación</h1>
+  <p class="sub">Congreso de los Diputados · 350 escaños. Elige cómo vota cada partido: el Sí suma por la izquierda, el No por la derecha y la abstención no suma a ningún lado.</p>
 
-  <div class="resumen">
-    <div class="total"><span id="suma">0</span> <small>/ 350 escaños asignados</small></div>
-    <div id="estado"></div>
+  <div class="marcador">
+    <div class="caja si"><div class="t">Sí</div><div class="n" id="nSi">0</div></div>
+    <div class="caja abs"><div class="t">Abstención</div><div class="n" id="nAbs">0</div></div>
+    <div class="caja no"><div class="t">No</div><div class="n" id="nNo">0</div></div>
   </div>
+  <div id="resultado" role="status"></div>
 
   <div class="barra-wrap">
     <div class="marca"><span>Mayoría absoluta: 176</span></div>
-    <div class="barra" id="barra" role="img" aria-label="Barra de escaños"></div>
+    <div class="barra" role="img" aria-label="Barra de votos">
+      <div class="lado" id="ladoSi"></div>
+      <div class="hueco"></div>
+      <div class="lado" id="ladoNo"></div>
+    </div>
   </div>
-  <div class="escala"><span>0</span><span>350</span></div>
+  <div class="escala"><span>Sí ← 0</span><span>350 → No</span></div>
 
   <div class="panel" id="panel"></div>
 
@@ -148,159 +119,156 @@
 </main>
 
 <script>
-  const TOTAL = 350;
-  const MAYORIA = 176;
+  const TOTAL = 350, MAYORIA = 176, CLAVE = "votacion-v1";
 
-  // Puedes cambiar nombres o colores aquí
+  // voto: "si" | "no" | "abs" | null (sin votar)
   const partidos = [
-    { id: "psoe", nombre: "PSOE", color: "#d8232a", texto: "#fff", valor: 0 },
-    { id: "pp",   nombre: "PP",   color: "#1f5fbf", texto: "#fff", valor: 0 },
-    { id: "vox",  nombre: "VOX",  color: "#2e9b4a", texto: "#fff", valor: 0 }
+    { nombre: "PSOE", color: "#d8232a", valor: 0, voto: null },
+    { nombre: "PP",   color: "#1f5fbf", valor: 0, voto: null },
+    { nombre: "VOX",  color: "#2e9b4a", valor: 0, voto: null }
   ];
 
-  const barra = document.getElementById("barra");
-  const panel = document.getElementById("panel");
-  const aviso = document.getElementById("aviso");
-  const sumaEl = document.getElementById("suma");
-  const estado = document.getElementById("estado");
+  const $ = id => document.getElementById(id);
+  const panel = $("panel"), aviso = $("aviso");
 
   const suma = () => partidos.reduce((a, p) => a + p.valor, 0);
-
-  function textoPara(hex) {
+  const textoPara = hex => {
     const n = parseInt(hex.slice(1), 16);
-    const lum = 0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255);
-    return lum > 150 ? "#222" : "#fff";
-  }
+    return (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) > 150 ? "#222" : "#fff";
+  };
 
-  function crearPartido(p, quitable) {
-    const tramo = document.createElement("div");
-    tramo.className = "tramo";
-    tramo.style.background = p.color;
-    tramo.style.color = p.texto;
-    tramo.style.width = "0%";
-    p.tramoEl = tramo;
-    barra.appendChild(tramo);
-
+  function crearPartido(p) {
     const card = document.createElement("div");
     card.className = "partido";
     card.innerHTML = `
-      <div class="color" style="background:${p.color}"></div>
+      <div class="color"></div>
       <div class="nombre"></div>
       <input class="valor" type="number" min="0" max="${TOTAL}" value="0">
       <div class="ctrl">
         <button type="button" class="menos">−</button>
         <button type="button" class="mas">+</button>
+      </div>
+      <div class="voto">
+        <button type="button" class="si">Sí</button>
+        <button type="button" class="abs">Abst.</button>
+        <button type="button" class="no">No</button>
       </div>`;
+    card.querySelector(".color").style.background = p.color;
     card.querySelector(".nombre").textContent = p.nombre;
-    card.querySelector(".valor").setAttribute("aria-label", "Escaños " + p.nombre);
+    p.inputEl = card.querySelector(".valor");
+    p.inputEl.setAttribute("aria-label", "Escaños " + p.nombre);
     card.querySelector(".menos").setAttribute("aria-label", "Restar uno a " + p.nombre);
     card.querySelector(".mas").setAttribute("aria-label", "Sumar uno a " + p.nombre);
-    p.inputEl = card.querySelector("input");
-    p.cardEl = card;
     card.querySelector(".menos").addEventListener("click", () => cambiar(p, p.valor - 1));
     card.querySelector(".mas").addEventListener("click", () => cambiar(p, p.valor + 1));
     p.inputEl.addEventListener("change", () => cambiar(p, parseInt(p.inputEl.value, 10) || 0));
-
-    if (quitable) {
+    p.botones = {};
+    ["si", "abs", "no"].forEach(v => {
+      const b = card.querySelector("." + v);
+      p.botones[v] = b;
+      b.addEventListener("click", () => { p.voto = (p.voto === v) ? null : v; pintar(); });
+    });
+    if (p.custom) {
       const x = document.createElement("button");
-      x.type = "button";
-      x.className = "quitar";
-      x.textContent = "×";
+      x.type = "button"; x.className = "quitar"; x.textContent = "×";
       x.setAttribute("aria-label", "Eliminar " + p.nombre);
       x.addEventListener("click", () => {
         partidos.splice(partidos.indexOf(p), 1);
-        p.tramoEl.remove();
-        card.remove();
-        aviso.textContent = "";
-        pintar();
+        card.remove(); aviso.textContent = ""; pintar();
       });
       card.appendChild(x);
     }
+    p.cardEl = card;
     panel.appendChild(card);
   }
-
-  partidos.forEach(p => crearPartido(p, false));
-
-  // Añadir partidos nuevos
-  document.getElementById("nuevo").addEventListener("submit", e => {
-    e.preventDefault();
-    const nombreEl = document.getElementById("nuevoNombre");
-    const color = document.getElementById("nuevoColor").value;
-    const nombre = nombreEl.value.trim() || "Partido " + (partidos.length + 1);
-    const p = { id: "c" + Date.now(), nombre, color, texto: textoPara(color), valor: 0, custom: true };
-    partidos.push(p);
-    crearPartido(p, true);
-    nombreEl.value = "";
-    aviso.textContent = "";
-    pintar();
-  });
 
   function cambiar(p, nuevo) {
     aviso.textContent = "";
     nuevo = Math.max(0, Math.min(TOTAL, nuevo));
     const otros = suma() - p.valor;
-    if (otros + nuevo > TOTAL) {
-      nuevo = TOTAL - otros;
-      aviso.textContent = "No se pueden superar los 350 escaños en total.";
-    }
+    if (otros + nuevo > TOTAL) { nuevo = TOTAL - otros; aviso.textContent = "No se pueden superar los 350 escaños en total."; }
     p.valor = nuevo;
     pintar();
   }
 
-  function pintar() {
-    partidos.forEach(p => {
-      p.tramoEl.style.width = (p.valor / TOTAL * 100) + "%";
-      p.tramoEl.textContent = p.valor > 0 ? p.valor : "";
-      p.inputEl.value = p.valor;
-    });
-    const s = suma();
-    sumaEl.textContent = s;
-    estado.textContent = s === 0 ? "" :
-      s >= MAYORIA ? "Con " + s + " escaños se alcanza la mayoría absoluta" :
-      "Faltan " + (MAYORIA - s) + " para la mayoría absoluta";
+  function tramo(p) {
+    const t = document.createElement("div");
+    t.className = "tramo";
+    t.style.background = p.color;
+    t.style.color = textoPara(p.color);
+    t.style.flex = p.valor + " 1 0%";
+    t.textContent = p.valor;
+    t.title = p.nombre;
+    return t;
   }
 
-  document.getElementById("reset").addEventListener("click", () => {
-    partidos.forEach(p => p.valor = 0);
-    aviso.textContent = "";
-    pintar();
+  function pintar() {
+    let si = 0, no = 0, abs = 0;
+    $("ladoSi").innerHTML = ""; $("ladoNo").innerHTML = "";
+    partidos.forEach(p => {
+      p.inputEl.value = p.valor;
+      ["si", "abs", "no"].forEach(v => {
+        p.botones[v].classList.toggle("on", p.voto === v);
+        p.botones[v].setAttribute("aria-pressed", p.voto === v);
+      });
+      if (p.valor === 0) return;
+      if (p.voto === "si") { si += p.valor; $("ladoSi").appendChild(tramo(p)); }
+      else if (p.voto === "no") { no += p.valor; $("ladoNo").appendChild(tramo(p)); }
+      else if (p.voto === "abs") abs += p.valor;
+    });
+    $("ladoSi").style.width = (si / TOTAL * 100) + "%";
+    $("ladoNo").style.width = (no / TOTAL * 100) + "%";
+    $("nSi").textContent = si; $("nNo").textContent = no; $("nAbs").textContent = abs;
+    let r = "";
+    if (si + no + abs > 0) {
+      if (si > no) r = "Gana el Sí por mayoría simple (" + si + " frente a " + no + ")" + (si >= MAYORIA ? ", con mayoría absoluta." : ".");
+      else if (no > si) r = "Gana el No (" + no + " frente a " + si + ")" + (no >= MAYORIA ? ", con mayoría absoluta." : ".");
+      else r = "Empate a " + si + " votos.";
+    }
+    $("resultado").textContent = r;
+  }
+
+  // Añadir partidos
+  $("nuevo").addEventListener("submit", e => {
+    e.preventDefault();
+    const nombre = $("nuevoNombre").value.trim() || "Partido " + (partidos.length + 1);
+    const p = { nombre, color: $("nuevoColor").value, valor: 0, voto: null, custom: true };
+    partidos.push(p); crearPartido(p);
+    $("nuevoNombre").value = ""; aviso.textContent = ""; pintar();
   });
 
-  // Guardar y cargar (se almacena en este navegador)
-  const CLAVE = "pactometro-v1";
-  const guardadoEl = document.getElementById("guardado");
+  // Guardar y cargar (en este navegador)
+  $("guardar").addEventListener("click", () => {
+    const datos = partidos.map(p => ({ nombre: p.nombre, color: p.color, valor: p.valor, voto: p.voto, custom: !!p.custom }));
+    const g = $("guardado");
+    try { localStorage.setItem(CLAVE, JSON.stringify(datos)); g.style.color = ""; g.textContent = "Cambios guardados"; }
+    catch (e) { g.style.color = "#b3261e"; g.textContent = "No se pudo guardar en este navegador"; }
+    setTimeout(() => g.textContent = "", 2500);
+  });
 
-  document.getElementById("guardar").addEventListener("click", () => {
-    const datos = partidos.map(p => ({ nombre: p.nombre, color: p.color, valor: p.valor, custom: !!p.custom }));
-    try {
-      localStorage.setItem(CLAVE, JSON.stringify(datos));
-      guardadoEl.textContent = "Cambios guardados";
-    } catch (e) {
-      guardadoEl.style.color = "#b3261e";
-      guardadoEl.textContent = "No se pudo guardar en este navegador";
-    }
-    setTimeout(() => { guardadoEl.textContent = ""; guardadoEl.style.color = ""; }, 2500);
+  $("reset").addEventListener("click", () => {
+    partidos.forEach(p => { p.valor = 0; p.voto = null; });
+    aviso.textContent = ""; pintar();
   });
 
   function cargar() {
     let datos;
-    try { datos = JSON.parse(localStorage.getItem(CLAVE)); } catch (e) { return; }
-    if (!Array.isArray(datos) || datos.length === 0) return;
-    partidos.forEach(p => { p.tramoEl.remove(); p.cardEl.remove(); });
+    try { datos = JSON.parse(localStorage.getItem(CLAVE)); } catch (e) { return false; }
+    if (!Array.isArray(datos) || !datos.length) return false;
     partidos.length = 0;
     let usados = 0;
     datos.forEach(d => {
       if (typeof d.nombre !== "string" || !/^#[0-9a-fA-F]{6}$/.test(d.color)) return;
       const v = Math.max(0, Math.min(TOTAL - usados, parseInt(d.valor, 10) || 0));
       usados += v;
-      const p = { id: "c" + partidos.length + Date.now(), nombre: d.nombre, color: d.color,
-                  texto: textoPara(d.color), valor: v, custom: !!d.custom };
-      partidos.push(p);
-      crearPartido(p, p.custom);
+      partidos.push({ nombre: d.nombre, color: d.color, valor: v,
+        voto: ["si", "no", "abs"].includes(d.voto) ? d.voto : null, custom: !!d.custom });
     });
+    return true;
   }
-  cargar();
 
+  cargar();
+  partidos.forEach(crearPartido);
   pintar();
 </script>
 </body>
