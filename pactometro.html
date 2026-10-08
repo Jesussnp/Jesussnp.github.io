@@ -86,6 +86,9 @@
     border-radius: 8px; font: inherit; cursor: pointer;
   }
   #reset:hover { background: var(--tinta); color: #fff; }
+  #guardar { border: 0; background: var(--tinta); color: #fff; padding: 10px 16px; border-radius: 8px; font: inherit; cursor: pointer; }
+  #guardar:hover { opacity: .88; }
+  #guardado { color: #1e7a3a; font-size: .9rem; font-weight: 600; }
   #aviso { color: #b3261e; font-size: .9rem; min-height: 1.2em; }
 
   .partido { position: relative; }
@@ -137,7 +140,9 @@
   </form>
 
   <div class="pie">
+    <button id="guardar" type="button">Guardar cambios</button>
     <button id="reset" type="button">Poner todo a 0</button>
+    <span id="guardado" role="status"></span>
     <span id="aviso" role="status"></span>
   </div>
 </main>
@@ -222,7 +227,7 @@
     const nombreEl = document.getElementById("nuevoNombre");
     const color = document.getElementById("nuevoColor").value;
     const nombre = nombreEl.value.trim() || "Partido " + (partidos.length + 1);
-    const p = { id: "c" + Date.now(), nombre, color, texto: textoPara(color), valor: 0 };
+    const p = { id: "c" + Date.now(), nombre, color, texto: textoPara(color), valor: 0, custom: true };
     partidos.push(p);
     crearPartido(p, true);
     nombreEl.value = "";
@@ -260,6 +265,41 @@
     aviso.textContent = "";
     pintar();
   });
+
+  // Guardar y cargar (se almacena en este navegador)
+  const CLAVE = "pactometro-v1";
+  const guardadoEl = document.getElementById("guardado");
+
+  document.getElementById("guardar").addEventListener("click", () => {
+    const datos = partidos.map(p => ({ nombre: p.nombre, color: p.color, valor: p.valor, custom: !!p.custom }));
+    try {
+      localStorage.setItem(CLAVE, JSON.stringify(datos));
+      guardadoEl.textContent = "Cambios guardados";
+    } catch (e) {
+      guardadoEl.style.color = "#b3261e";
+      guardadoEl.textContent = "No se pudo guardar en este navegador";
+    }
+    setTimeout(() => { guardadoEl.textContent = ""; guardadoEl.style.color = ""; }, 2500);
+  });
+
+  function cargar() {
+    let datos;
+    try { datos = JSON.parse(localStorage.getItem(CLAVE)); } catch (e) { return; }
+    if (!Array.isArray(datos) || datos.length === 0) return;
+    partidos.forEach(p => { p.tramoEl.remove(); p.cardEl.remove(); });
+    partidos.length = 0;
+    let usados = 0;
+    datos.forEach(d => {
+      if (typeof d.nombre !== "string" || !/^#[0-9a-fA-F]{6}$/.test(d.color)) return;
+      const v = Math.max(0, Math.min(TOTAL - usados, parseInt(d.valor, 10) || 0));
+      usados += v;
+      const p = { id: "c" + partidos.length + Date.now(), nombre: d.nombre, color: d.color,
+                  texto: textoPara(d.color), valor: v, custom: !!d.custom };
+      partidos.push(p);
+      crearPartido(p, p.custom);
+    });
+  }
+  cargar();
 
   pintar();
 </script>
