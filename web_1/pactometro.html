@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pactómetro del Congreso</title>
+<style>
+  :root {
+    --fondo: #f3f1ec;
+    --papel: #ffffff;
+    --tinta: #1d2230;
+    --suave: #6b7080;
+    --linea: #d9d6cd;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--tinta);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    padding: 32px 16px 48px;
+  }
+  main { max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 1.9rem; margin: 0 0 4px; letter-spacing: -0.02em; }
+  .sub { color: var(--suave); margin: 0 0 28px; }
+
+  .resumen {
+    display: flex; justify-content: space-between; align-items: baseline;
+    flex-wrap: wrap; gap: 8px; margin-bottom: 10px;
+  }
+  .total { font-size: 2.4rem; font-weight: 700; line-height: 1; }
+  .total small { font-size: 1rem; font-weight: 400; color: var(--suave); }
+  #estado { font-weight: 600; }
+
+  /* Barra */
+  .barra-wrap { position: relative; padding-top: 22px; }
+  .barra {
+    display: flex; height: 64px; background: #e4e1d8;
+    border-radius: 6px; overflow: hidden; border: 1px solid var(--linea);
+  }
+  .tramo {
+    height: 100%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1.1rem; overflow: hidden;
+    transition: width .25s ease;
+  }
+  .marca {
+    position: absolute; top: 0; bottom: -8px; left: calc(176 / 350 * 100%);
+    border-left: 2px dashed var(--tinta); pointer-events: none;
+  }
+  .marca span {
+    position: absolute; top: 0; left: 6px; font-size: .78rem; white-space: nowrap;
+    background: var(--fondo); padding: 0 4px; font-weight: 600;
+  }
+  .escala { display: flex; justify-content: space-between; font-size: .8rem; color: var(--suave); margin-top: 10px; }
+
+  /* Botones */
+  .panel {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 14px; margin-top: 32px;
+  }
+  .partido {
+    background: var(--papel); border: 1px solid var(--linea); border-radius: 10px;
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .partido .color { height: 10px; }
+  .partido .nombre { text-align: center; font-weight: 600; padding: 12px 8px 0; }
+  .valor {
+    width: 100%; border: 0; background: none; font: inherit;
+    font-size: 2.2rem; font-weight: 700; padding: 6px 0 10px; color: var(--tinta);
+    text-align: center; -moz-appearance: textfield;
+  }
+  .valor::-webkit-outer-spin-button, .valor::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .ctrl { display: flex; border-top: 1px solid var(--linea); }
+  .ctrl button {
+    flex: 1; border: 0; background: none; font-size: 1.6rem; padding: 10px 0;
+    cursor: pointer; color: var(--tinta);
+  }
+  .ctrl button + button { border-left: 1px solid var(--linea); }
+  .ctrl button:hover { background: #efece4; }
+  .ctrl button:active { background: #e2ded3; }
+  button:focus-visible, .valor:focus-visible { outline: 3px solid #3b6fd4; outline-offset: -3px; }
+
+  .pie { margin-top: 28px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  #reset {
+    border: 1px solid var(--tinta); background: none; padding: 9px 16px;
+    border-radius: 8px; font: inherit; cursor: pointer;
+  }
+  #reset:hover { background: var(--tinta); color: #fff; }
+  #aviso { color: #b3261e; font-size: .9rem; min-height: 1.2em; }
+
+  .partido { position: relative; }
+  .quitar {
+    position: absolute; top: 14px; right: 6px; width: 24px; height: 24px;
+    border: 0; border-radius: 50%; background: none; color: var(--suave);
+    font-size: 1.1rem; line-height: 1; cursor: pointer;
+  }
+  .quitar:hover { background: #efece4; color: #b3261e; }
+  .nuevo {
+    margin-top: 28px; padding: 16px; background: var(--papel);
+    border: 1px solid var(--linea); border-radius: 10px;
+    display: flex; gap: 12px; align-items: end; flex-wrap: wrap;
+  }
+  .nuevo label { display: flex; flex-direction: column; gap: 4px; font-size: .85rem; color: var(--suave); }
+  .nuevo input[type=text] { font: inherit; padding: 8px 10px; border: 1px solid var(--linea); border-radius: 6px; min-width: 180px; }
+  .nuevo input[type=color] { width: 56px; height: 38px; padding: 2px; border: 1px solid var(--linea); border-radius: 6px; background: none; cursor: pointer; }
+  .nuevo button { border: 0; background: var(--tinta); color: #fff; padding: 10px 16px; border-radius: 8px; font: inherit; cursor: pointer; }
+  .nuevo button:hover { opacity: .88; }
+  @media (prefers-reduced-motion: reduce) { .tramo { transition: none; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Pactómetro</h1>
+  <p class="sub">Congreso de los Diputados · 350 escaños. Ajusta los escaños de cada partido y la barra se rellena sola.</p>
+
+  <div class="resumen">
+    <div class="total"><span id="suma">0</span> <small>/ 350 escaños asignados</small></div>
+    <div id="estado"></div>
+  </div>
+
+  <div class="barra-wrap">
+    <div class="marca"><span>Mayoría absoluta: 176</span></div>
+    <div class="barra" id="barra" role="img" aria-label="Barra de escaños"></div>
+  </div>
+  <div class="escala"><span>0</span><span>350</span></div>
+
+  <div class="panel" id="panel"></div>
+
+  <form class="nuevo" id="nuevo">
+    <label>Nombre del partido
+      <input type="text" id="nuevoNombre" placeholder="Ej.: Sumar" maxlength="20">
+    </label>
+    <label>Color del partido
+      <input type="color" id="nuevoColor" value="#00a3a3">
+    </label>
+    <button type="submit">Añadir Partido</button>
+  </form>
+
+  <div class="pie">
+    <button id="reset" type="button">Poner todo a 0</button>
+    <span id="aviso" role="status"></span>
+  </div>
+</main>
+
+<script>
+  const TOTAL = 350;
+  const MAYORIA = 176;
+
+  // Puedes cambiar nombres o colores aquí
+  const partidos = [
+    { id: "psoe", nombre: "PSOE", color: "#d8232a", texto: "#fff", valor: 0 },
+    { id: "pp",   nombre: "PP",   color: "#1f5fbf", texto: "#fff", valor: 0 },
+    { id: "vox",  nombre: "VOX",  color: "#2e9b4a", texto: "#fff", valor: 0 }
+  ];
+
+  const barra = document.getElementById("barra");
+  const panel = document.getElementById("panel");
+  const aviso = document.getElementById("aviso");
+  const sumaEl = document.getElementById("suma");
+  const estado = document.getElementById("estado");
+
+  const suma = () => partidos.reduce((a, p) => a + p.valor, 0);
+
+  function textoPara(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    const lum = 0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255);
+    return lum > 150 ? "#222" : "#fff";
+  }
+
+  function crearPartido(p, quitable) {
+    const tramo = document.createElement("div");
+    tramo.className = "tramo";
+    tramo.style.background = p.color;
+    tramo.style.color = p.texto;
+    tramo.style.width = "0%";
+    p.tramoEl = tramo;
+    barra.appendChild(tramo);
+
+    const card = document.createElement("div");
+    card.className = "partido";
+    card.innerHTML = `
+      <div class="color" style="background:${p.color}"></div>
+      <div class="nombre"></div>
+      <input class="valor" type="number" min="0" max="${TOTAL}" value="0">
+      <div class="ctrl">
+        <button type="button" class="menos">−</button>
+        <button type="button" class="mas">+</button>
+      </div>`;
+    card.querySelector(".nombre").textContent = p.nombre;
+    card.querySelector(".valor").setAttribute("aria-label", "Escaños " + p.nombre);
+    card.querySelector(".menos").setAttribute("aria-label", "Restar uno a " + p.nombre);
+    card.querySelector(".mas").setAttribute("aria-label", "Sumar uno a " + p.nombre);
+    p.inputEl = card.querySelector("input");
+    p.cardEl = card;
+    card.querySelector(".menos").addEventListener("click", () => cambiar(p, p.valor - 1));
+    card.querySelector(".mas").addEventListener("click", () => cambiar(p, p.valor + 1));
+    p.inputEl.addEventListener("change", () => cambiar(p, parseInt(p.inputEl.value, 10) || 0));
+
+    if (quitable) {
+      const x = document.createElement("button");
+      x.type = "button";
+      x.className = "quitar";
+      x.textContent = "×";
+      x.setAttribute("aria-label", "Eliminar " + p.nombre);
+      x.addEventListener("click", () => {
+        partidos.splice(partidos.indexOf(p), 1);
+        p.tramoEl.remove();
+        card.remove();
+        aviso.textContent = "";
+        pintar();
+      });
+      card.appendChild(x);
+    }
+    panel.appendChild(card);
+  }
+
+  partidos.forEach(p => crearPartido(p, false));
+
+  // Añadir partidos nuevos
+  document.getElementById("nuevo").addEventListener("submit", e => {
+    e.preventDefault();
+    const nombreEl = document.getElementById("nuevoNombre");
+    const color = document.getElementById("nuevoColor").value;
+    const nombre = nombreEl.value.trim() || "Partido " + (partidos.length + 1);
+    const p = { id: "c" + Date.now(), nombre, color, texto: textoPara(color), valor: 0 };
+    partidos.push(p);
+    crearPartido(p, true);
+    nombreEl.value = "";
+    aviso.textContent = "";
+    pintar();
+  });
+
+  function cambiar(p, nuevo) {
+    aviso.textContent = "";
+    nuevo = Math.max(0, Math.min(TOTAL, nuevo));
+    const otros = suma() - p.valor;
+    if (otros + nuevo > TOTAL) {
+      nuevo = TOTAL - otros;
+      aviso.textContent = "No se pueden superar los 350 escaños en total.";
+    }
+    p.valor = nuevo;
+    pintar();
+  }
+
+  function pintar() {
+    partidos.forEach(p => {
+      p.tramoEl.style.width = (p.valor / TOTAL * 100) + "%";
+      p.tramoEl.textContent = p.valor > 0 ? p.valor : "";
+      p.inputEl.value = p.valor;
+    });
+    const s = suma();
+    sumaEl.textContent = s;
+    estado.textContent = s === 0 ? "" :
+      s >= MAYORIA ? "Con " + s + " escaños se alcanza la mayoría absoluta" :
+      "Faltan " + (MAYORIA - s) + " para la mayoría absoluta";
+  }
+
+  document.getElementById("reset").addEventListener("click", () => {
+    partidos.forEach(p => p.valor = 0);
+    aviso.textContent = "";
+    pintar();
+  });
+
+  pintar();
+</script>
+</body>
+</html>
